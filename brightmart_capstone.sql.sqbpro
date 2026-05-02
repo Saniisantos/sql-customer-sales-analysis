@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="brightmart.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1450"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="customers" custom_title="0" dock_id="1" table="4,9:maincustomers"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000011800ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1*">
+-- 1. creating tablesCREATE TABLE customers (customer_id INTEGER PRIMARY KEY,customer_name TEXT NOT NULL,gender TEXT,city TEXT,join_date TEXT);
+CREATE TABLE products (product_id INTEGER PRIMARY KEY,product_name TEXT NOT NULL,category TEXT,price REAL NOT NULL);
+CREATE TABLE orders (order_id INTEGER PRIMARY KEY,customer_id INTEGER,order_date TEXT,payment_method TEXT,status TEXT,FOREIGN KEY (customer_id) REFERENCES customers(customer_id));
+CREATE TABLE order_items (order_item_id INTEGER PRIMARY KEY,order_id INTEGER,product_id INTEGER,quantity INTEGER,FOREIGN KEY (order_id) REFERENCES orders(order_id),FOREIGN KEY (product_id) REFERENCES products(product_id));
+--3.inserting records in each tabelINSERT INTO customers(customer_id, customer_name, gender, city, join_date)VALUES(1, 'Mary Wanjiku', 'Female', 'Nairobi', '2025-01-10'),(2, 'John Kamau', 'Male', 'Nakuru', '2025-01-15'),(3, 'Faith Achieng', 'Female', 'Kisumu', '2025-02-01'),(4, 'Peter Otieno', 'Male', 'Mombasa', '2025-02-10'),(5, 'Ann Njeri', 'Female', 'Nairobi', '2025-02-18'),(6, 'David Mwangi', 'Male', 'Eldoret', '2025-03-05'),(7, 'Grace Atieno', 'Female', 'Kisumu', '2025-03-09'),(8, 'Brian Kiptoo', 'Male', 'Nairobi', '2025-03-15');
+INSERT INTO products(product_id, product_name, category, price)VALUES(101, 'Rice 2kg', 'Groceries', 250),(102, 'Cooking Oil 1L', 'Groceries', 320),(103, 'Milk 500ml', 'Dairy', 60),(104, 'Bread', 'Bakery', 70),(105, 'Sugar 1kg', 'Groceries', 180),(106, 'Soap Bar', 'Cleaning', 150),(107, 'Toothpaste', 'Personal Care', 120),(108, 'Shampoo', 'Personal Care', 350),(109, 'Biscuits', 'Snacks', 100),(110, 'Soda 500ml', 'Beverages', 80);
+INSERT INTO orders(order_id, customer_id, order_date, payment_method,status)VALUES(1001, 1, '2025-03-20', 'Mpesa', 'Completed'),(1002, 2, '2025-03-21', 'Cash', 'Completed'),(1003, 3, '2025-03-21', 'Card', 'Completed'),(1004, 1, '2025-03-22', 'Mpesa', 'Completed'),(1005, 4, '2025-03-22', 'Cash', 'Cancelled'),(1006, 5, '2025-03-23', 'Mpesa', 'Completed'),(1007, 6, '2025-03-24', 'Card', 'Completed'),(1008, 7, '2025-03-24', 'Mpesa', 'Completed'),(1009, 8, '2025-03-25', 'Cash', 'Completed'),(1010, 2, '2025-03-25', 'Mpesa', 'Completed');
+INSERT INTO order_items(order_item_id, order_id, product_id, quantity)VALUES(1, 1001, 101, 2), (2, 1001, 103, 4),(3, 1001, 104, 1), (4, 1002, 102, 1),(5, 1002, 105, 2), (6, 1003, 103, 6),(7, 1003, 109, 3), (8, 1004, 106, 2),(9, 1004, 107, 1), (10, 1005, 108, 1),(11, 1006, 101, 1), (12, 1006, 110, 4),(13, 1007, 102, 2), (14, 1007, 108, 1),(15, 1008, 103, 5), (16, 1008, 104, 2),(17, 1009, 109, 6), (18, 1009, 110, 3),(19, 1010, 101, 1), (20, 1010, 105, 1);
+
+--3. viewing records in each table  
+select *from customers;
+select*from orders;
+select * from products;
+select * from order_items;
+
+
+--4. query to display:
+-- 4.customer name and cities
+SELECT customer_name,city from customers;
+
+--5. Unique cities
+select distinct city from customers;
+
+--6.Groceries category
+select *from products where category ="Groceries";
+
+--7.Completed orders
+select * from orders where status="Completed";
+
+--8.Price between 100 and 300
+select * from products where price between 100 and 300;
+
+--9.Nairobi or Kisumu customers
+select *from customers where city in ('Nairobi','Kisumu');
+
+--10.Products starting with S
+select * from products where product_name like "s%";
+
+--11. Products by price (high to low)
+select * from products order by price desc;
+
+--12. Top 3 most expensive
+select * from products order by price desc limit 3;
+
+--13. Skip first 2, show next 3
+select * from products limit 3 offset 2;
+
+
+                                               --JOINS
+--14. Show all the Order details +Customer Name
+select orders.order_id,orders.order_date,orders.payment_method,orders.status,customers.customer_name
+from orders
+inner join customers on orders.customer_id = customers.customer_id;
+
+--15. Show the Ordered Product + Order ID + Quantity
+select products.product_name,order_items.order_id, order_items.quantity from products
+inner join order_items on products.product_id = order_items.product_id;
+
+--16. Display Customer, Order,Product, Quantity, Date
+SELECT customers.customer_name,orders.order_id,products.product_name,order_items.quantity,orders.order_date from customers
+INNER JOIN orders on customers.customer_id = orders.customer_id
+INNER JOIN order_items on orders.order_id =order_items.order_id
+INNER JOIN products on order_items.product_id = products.product_id;
+
+--17. Display All Customers incl.those with no orders (LEFT JOIN)
+SELECT customers.customer_name, orders.order_id,orders.order_date,orders.status FROM customers
+LEFT JOIN orders on customers.customer_id = orders.customer_id;
+
+--18. Display the total number of customers
+SELECT count(*) AS Total_Customers from customers;
+
+--19. Average product price
+SELECT avg(products.price) AS Avg_Price from products;
+
+--20. Highest and lowest prices
+select max(products.price) as Highest_Price, min(products.price) as Lowest_Price from products;
+
+--21. Products per category
+select category, count(*) Total_products from products group by category;
+
+--22. Total quantity sold per product
+SELECT products.product_name, SUM(order_items.quantity) AS total_sold FROM order_items
+INNER JOIN products ON order_items.product_id = products.product_id
+GROUP BY products.product_name;
+
+--23. Orders per customer
+select customers.customer_name, COUNT(orders.order_id) as Total_orders from customers
+inner join orders on customers.customer_id = orders.customer_id group by customers.customer_name;
+
+--24. Categories with more than 1 product
+select category,count(*) as Total_products from products
+group by category
+ having count(*)>1;
+ 
+ --25. Display the total sales value per order item
+ select order_items.order_item_id,order_items.order_id, order_items.quantity,products.product_name,products.price
+,(products.price * order_items.quantity) as Total_Sales from order_items
+inner join products on order_items.product_id = products.product_id ;
+
+--26. Show the total sales per order
+select order_items.order_id,sum(products.price * order_items.quantity) as Total_sales
+from order_items
+inner join products on order_items.product_id = products.product_id 
+group by order_items.order_id;
+ 
+ --27. What is the total amount spent by each customer
+ select customers.customer_name,sum(order_items.quantity * products.price) as total_spent
+ from customers
+ inner join orders on customers.customer_id = orders.customer_id
+ inner join order_items on orders.order_id = order_items.order_id
+ inner join products on order_items.product_id = products.product_id 
+ group by customer_name;
+
+ --28. Which is the best-selling category by quantity sold
+ select products.category, sum(order_items.quantity) as HighestQuantitySold from products
+ inner join order_items on products.product_id = order_items.product_id
+ group by category order by HighestQuantitySold desc;
+ 
+ --29.Using subqueries show orders whose total sales are above the average order total
+ select * 
+ from ( 
+select order_items.order_id,sum(products.price * order_items.quantity) as Total_sales
+from order_items
+inner join products on order_items.product_id = products.product_id 
+group by order_items.order_id) as orderTotals
+where Total_sales>(select avg(Total_sales) 
+from (
+select order_items.order_id,sum(products.price * order_items.quantity) as Total_sales
+from order_items
+inner join products on order_items.product_id = products.product_id 
+group by order_items.order_id) as avgTable
+);
+
+--30. Using subqueries show Customers whose total spending is above the average customer spending
+select * from(
+select customers.customer_name,sum(order_items.quantity * products.price) as total_spent
+ from customers
+ inner join orders on customers.customer_id = orders.customer_id
+ inner join order_items on orders.order_id = order_items.order_id
+ inner join products on order_items.product_id = products.product_id 
+ group by customer_name
+)as totalSpent
+where total_spent>(select avg(total_spent) from 
+(
+select customers.customer_name,sum(order_items.quantity * products.price) as total_spent
+ from customers
+ inner join orders on customers.customer_id = orders.customer_id
+ inner join order_items on orders.order_id = order_items.order_id
+ inner join products on order_items.product_id = products.product_id 
+ group by customer_name
+)as totalSpent
+) ;
+
+--31. Using subqueries show the products that cost more than the average product price
+SELECT *
+FROM products
+WHERE price > (
+    SELECT AVG(price)
+    FROM products
+);
+
+--32. Customer spending analysis using a CTE
+WITH customer_spending AS (
+    SELECT 
+        customers.customer_id,
+        customers.customer_name,
+        SUM(order_items.quantity * products.price) AS total_spent
+    FROM customers
+    INNER JOIN orders 
+        ON customers.customer_id = orders.customer_id
+    INNER JOIN order_items 
+        ON orders.order_id = order_items.order_id
+    INNER JOIN products 
+        ON order_items.product_id = products.product_id
+    GROUP BY customers.customer_id, customers.customer_name
+)
+
+SELECT *
+FROM customer_spending;
+
+--33. Customers spending above average using CTEs
+WITH customer_spending AS (
+    SELECT 
+        customers.customer_id,
+        customers.customer_name,
+        SUM(order_items.quantity * products.price) AS total_spent
+    FROM customers
+    INNER JOIN orders 
+        ON customers.customer_id = orders.customer_id
+    INNER JOIN order_items 
+        ON orders.order_id = order_items.order_id
+    INNER JOIN products 
+        ON order_items.product_id = products.product_id
+    GROUP BY customers.customer_id, customers.customer_name
+),
+avg_spending AS (
+    SELECT AVG(total_spent) AS avg_value
+    FROM customer_spending
+)
+SELECT *
+FROM customer_spending
+WHERE total_spent > (SELECT avg_value FROM avg_spending);
+
+--34. Dashboard-ready sales dataset
+SELECT 
+    c.customer_name,
+    c.city,
+    o.order_id,
+    o.order_date,
+    o.payment_method,
+    o.status,
+    p.product_name,
+    p.category,
+    oi.quantity,
+    p.price,
+    (oi.quantity * p.price) AS total_sales
+FROM customers c
+JOIN orders o 
+    ON c.customer_id = o.customer_id
+JOIN order_items oi 
+    ON o.order_id = oi.order_id
+JOIN products p 
+    ON oi.product_id = p.product_id;
+											--Report 
+	WITH customer_summary AS (
+    SELECT 
+        c.customer_name,
+        c.city,
+        COUNT(DISTINCT o.order_id) AS total_completed_orders,
+        SUM(oi.quantity * p.price) AS total_amount_spent
+    FROM customers c
+    JOIN orders o 
+        ON c.customer_id = o.customer_id
+    JOIN order_items oi 
+        ON o.order_id = oi.order_id
+    JOIN products p 
+        ON oi.product_id = p.product_id
+    WHERE o.status = 'Completed'
+    GROUP BY c.customer_name, c.city
+)
+
+SELECT 
+    customer_name,
+    city,
+    total_completed_orders,
+    total_amount_spent,
+    CASE
+        WHEN total_amount_spent >= 1000 THEN 'High Value'
+        WHEN total_amount_spent >= 500 THEN 'Medium Value'
+        ELSE 'Low Value'
+    END AS spending_category
+FROM customer_summary
+WHERE total_completed_orders >= 1
+ORDER BY total_amount_spent DESC;		
