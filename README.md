@@ -7,10 +7,11 @@ aggregations, subqueries, and reporting queries.
 BrightMart Sales SQL Analysis is a portfolio project designed to demonstrate practical 
 SQL skills used in real business environments. The project analyzes retail sales data 
 to uncover customer behavior, revenue trends, and product performance
-****Business Problem**
 
-**Retail businesses need data-driven decisions to understand:**
-**
+Business Problem
+
+Retail businesses need data-driven decisions to understand:
+
 Who are the top customers?
 Which cities generate the most sales?
 Which products perform best?
