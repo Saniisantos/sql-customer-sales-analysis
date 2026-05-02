@@ -3,7 +3,7 @@ SQL project analyzing BrightMart store sales, customer spending,
 and business insights using joins,
 aggregations, subqueries, and reporting queries.
 
-**Project Summary**
+Project Summary
 BrightMart Sales SQL Analysis is a portfolio project designed to demonstrate practical 
 SQL skills used in real business environments. The project analyzes retail sales data 
 to uncover customer behavior, revenue trends, and product performance
